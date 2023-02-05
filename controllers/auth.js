@@ -30,8 +30,8 @@ exports.login = async(req, res) => {
 
         if (!isPasswordSame) return res.status(400).json({ message: "Invalid credentials" })
 
-        const token = await JWT.sign({ email: newUser.email, id: newUser._id }, 'ST@CK0VERFL0W', { expiresIn: '1h' })
-        res.status(200).json({ token })
+        const token = await JWT.sign({ email: user.email, id: user._id }, 'ST@CK0VERFL0W', { expiresIn: '1h' })
+        res.status(200).json({ ...user, token })
     } catch (e) {
         res.status(500).json({ message: 'Something went wrong' })
     }
