@@ -10,3 +10,12 @@ exports.askQuestion = async (req, res) => {
         res.status(409).json({ message: "couldn't post a new question"})
     }
 }
+
+exports.getQuestions = async(req, res) => {
+    try{
+        const questionList = await questions.find().sort({ _id: -1 })
+        res.status(200).json(questionList)
+    }catch(err){
+        res.status(404).json({ message: err.message })
+    }
+}
