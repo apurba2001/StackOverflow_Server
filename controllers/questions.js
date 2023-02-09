@@ -1,5 +1,4 @@
 const questions = require('../models/questions')
-const mongoose = require('mongoose')
 
 exports.askQuestion = async (req, res) => {
     const postQuestion = new questions({ ...req.body, userId: req.userId })
