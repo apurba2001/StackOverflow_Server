@@ -9,8 +9,8 @@ exports.signup = async (req, res) => {
         if (existingUser) return res.status(404).json({ message: "User already exist" })
         const hashedPassword = await bcrypt.hash(password, 10)
         const newUser = await users.create({ name, email, password: hashedPassword })
-        const token = await JWT.sign({ email: newUser.email, id: newUser._id }, 'ST@CK0VERFL0W', { expiresIn: '1h' })
-        res.status(200).json({ result: newUser, token })
+        // const token = await JWT.sign({ email: newUser.email, id: newUser._id }, 'ST@CK0VERFL0W', { expiresIn: '1h' })
+        res.status(200).json({ result: newUser })
     } catch (e) {
         res.status(500).json({ message: 'Something went wrong' })
     }
