@@ -33,3 +33,52 @@ exports.deleteQuestion = async (req, res) => {
         res.status(404).json({ message: err.message })
     }
 }
+
+exports.voteQuestion = async (req, res) => {
+    const _id = req.params.id
+    const { value, userId } = req.body
+
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+        return res.status(404).json({ message: 'Question unavailable' })
+    }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(404).json({ message: 'User unavailable' })
+    }
+
+    try {
+        const question = await questions.findById(_id)
+
+        if (!question) {
+            return res.status(404).json({ message: 'Question not found' })
+        }
+
+        const upIdx = question.upVote.indexOf(userId)
+        const downIdx = question.downVote.indexOf(userId)
+
+        if (value === 'upvote') {
+            if (downIdx !== -1) {
+                question.downVote.splice(downIdx, 1);
+            }
+            if (upIdx === -1) {
+                question.upVote.push(userId)
+            } else {
+                question.upVote.splice(upIdx, 1)
+            }
+        } else if (value === 'downvote') {
+            if (upIdx !== -1) {
+                question.upVote.splice(upIdx, 1)
+            }
+            if (downIdx === -1) {
+                question.downVote.push(userId)
+            } else {
+                question.downVote.splice(downIdx, 1)
+            }
+        }
+
+        await question.save()
+
+        res.status(200).json({ message: 'Successfully voted' })
+    } catch (err) {
+        res.status(500).json({ message: 'An error occurred while voting' })
+    }
+}
